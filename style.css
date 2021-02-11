@@ -1,0 +1,89 @@
+body{
+    background-color: #d9e6f2;
+    text-align: center;
+    font-family: Verdana, sans-serif;
+}
+
+#top {
+    text-align: center;
+}
+
+#footer { 
+    text-align: center;
+    position: fixed; 
+    padding: 10px 10px 0px 10px; 
+    bottom: 0; 
+    width: 100%;
+    height: 40px; 
+    background: grey; 
+}
+
+#games {
+    font-size: 20pt;
+}
+
+.whitebg {
+    background-color: white;
+}
+
+#top{
+    display: inline-block;
+    height: 128px;
+    width: 100%;
+}
+
+#logotitle {
+    width: 478px;
+    height: 128px;
+    margin: auto;
+}
+
+#links {
+    margin: 5px 0px 5px 0px;
+    font-size: 20pt;
+    padding: 5px 5px 5px 5px;
+    color: green;
+}
+
+a {
+    color: blue;
+}
+
+.menulinks {
+    color: green;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.menulinks:hover {
+    background-color: #d9e6f2;
+}
+
+div{
+    border: 0px solid black;
+    display: block;
+}
+
+#container{
+    
+    clear: both;
+}
+
+#title{
+    font-size: 30px;
+    font-weight: bold;
+    float: left;
+    width: 350px;
+    height: 128px;
+    line-height: 128px;
+}
+
+#logo{
+    float: left;
+}
+
+#wbudowie{
+    font-size: 50px;
+    color: red;
+    font-weight: bold;
+}
