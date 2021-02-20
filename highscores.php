@@ -3,7 +3,7 @@
 <?php
     require_once('polish.php');
     $title = "Plansza.online - strona w budowie";
-    $pagetitle = $lang["kalambury"];
+    $pagetitle = $lang["titlehighscores"];
     include "header.php";
 ?>
 
@@ -11,9 +11,7 @@
 
 <div id="container">
     <br>
-    <div id="games">
-        <a href="index.php"><?php echo $lang["powrot"] ?></a>
-    </div>
+    //TODO
     
 </div>
 

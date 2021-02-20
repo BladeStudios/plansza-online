@@ -1,11 +1,40 @@
-body{
+/* ELEMENT SELECTORS */
+
+a {
+    color: blue;
+}
+
+body {
     background-color: #d9e6f2;
     text-align: center;
     font-family: Verdana, sans-serif;
 }
 
-#top {
-    text-align: center;
+div {
+    border: 0px solid black;
+    display: block;
+}
+
+/* CLASS SELECTORS */
+
+.menulinks {
+    color: green;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.menulinks:hover {
+    background-color: #d9e6f2;
+}
+
+.whitebg {
+    background-color: white;
+}
+
+/* ID SELECTORS */
+
+#container {
+    clear: both;
 }
 
 #footer { 
@@ -22,14 +51,8 @@ body{
     font-size: 20pt;
 }
 
-.whitebg {
-    background-color: white;
-}
-
-#top{
-    display: inline-block;
-    height: 128px;
-    width: 100%;
+#logo {
+    float: left;
 }
 
 #logotitle {
@@ -45,31 +68,17 @@ body{
     color: green;
 }
 
-a {
-    color: blue;
-}
-
-.menulinks {
-    color: green;
+#pagetitle {
+    font-size: 30px;
     font-weight: bold;
-    text-decoration: none;
 }
 
-.menulinks:hover {
-    background-color: #d9e6f2;
+#registerform {
+    text-align: left;
+    display: inline-block;
 }
 
-div{
-    border: 0px solid black;
-    display: block;
-}
-
-#container{
-    
-    clear: both;
-}
-
-#title{
+#title {
     font-size: 30px;
     font-weight: bold;
     float: left;
@@ -78,11 +87,14 @@ div{
     line-height: 128px;
 }
 
-#logo{
-    float: left;
+#top {
+    text-align: center;
+    display: inline-block;
+    height: 128px;
+    width: 100%;
 }
 
-#wbudowie{
+#wbudowie {
     font-size: 50px;
     color: red;
     font-weight: bold;

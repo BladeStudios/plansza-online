@@ -1,7 +1,9 @@
 <!-- HEADER -->
 
 <?php
+    require_once('polish.php');
     $title = "Plansza.online - strona w budowie";
+    $pagetitle = $lang["str"];
     include "header.php";
 ?>
 
