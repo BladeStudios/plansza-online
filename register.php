@@ -114,7 +114,7 @@
                         $ip = $_SERVER['REMOTE_ADDR'];
                     }
 
-                    if($connection->query("INSERT INTO users VALUES (NULL,'$nick','$password_hash',0,'$timestamp',0,0,'$email','','','',0,'$ip',0,0,0,'','')"))
+                    if($connection->query("INSERT INTO users VALUES (NULL,'$nick','$password_hash','$timestamp',0,0,'$email','','','',0,'$ip',0,0,0,'','')"))
                     {
                         $_SESSION['registered'] = true;
                         header('Location: index.php');
