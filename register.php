@@ -124,7 +124,7 @@
                     $languageArray = explode(",",$_SERVER['HTTP_ACCEPT_LANGUAGE']);
                     $language = $languageArray[0];
 
-                    if($connection->query("INSERT INTO users VALUES (NULL,'$nick','$password_hash','$timestamp',0,0,'$email','','','',0,'$ip',0,0,0,'$country','$language')"))
+                    if($connection->query("INSERT INTO users VALUES (NULL,'$nick','$password_hash','$timestamp',0,0,'$email','','','',0,'$ip',0,0,0,0,'$country','$language')"))
                     {
                         $_SESSION['registered'] = true;
                         header('Location: index.php');
