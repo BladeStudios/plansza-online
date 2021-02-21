@@ -1,5 +1,7 @@
 <?php
     session_start();
+    require_once('connect.php');
+    require_once('functions.php');
 
     if(!isset($_POST['login']) || !isset($_POST['password']))
     {
@@ -7,7 +9,6 @@
         exit();
     }
 
-    require_once('connect.php');
 
     $connection = @new mysqli($host, $db_user, $db_password, $db_name);
 
@@ -55,7 +56,11 @@
                         $ip = $_SERVER['REMOTE_ADDR'];
                     }
                     $id = $row['id'];
-                    $sql = "UPDATE users SET last_ip=cur_ip, online=1, online_from='$timestamp', last_activity='$timestamp' WHERE id='$id'";
+
+                    $user_os        = getOS();
+                    $user_browser   = getBrowser();
+
+                    $sql = "UPDATE users SET last_ip=cur_ip, online=1, online_from='$timestamp', last_activity='$timestamp', system='$user_os', browser='$user_browser' WHERE id='$id'";
                     $sql2 = "UPDATE users SET cur_ip='$ip' WHERE id='$id'";
                     
                     if($result = $connection->query($sql))

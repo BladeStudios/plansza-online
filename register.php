@@ -2,6 +2,7 @@
 
 <?php
     require_once('polish.php');
+    require_once('functions.php');
     $title = "Plansza.online - strona w budowie";
     $pagetitle = $lang["createaccount"];
     include "header.php";
@@ -124,7 +125,11 @@
                     $languageArray = explode(",",$_SERVER['HTTP_ACCEPT_LANGUAGE']);
                     $language = $languageArray[0];
 
-                    if($connection->query("INSERT INTO users VALUES (NULL,'$nick','$password_hash','$timestamp',0,0,'$email','','','',0,'$ip',0,0,0,0,'$country','$language')"))
+                    //operating system and web browser
+                    $user_os        = getOS();
+                    $user_browser   = getBrowser();
+
+                    if($connection->query("INSERT INTO users VALUES (NULL,'$nick','$password_hash','$timestamp',0,0,'$email','','','',0,'$ip',0,0,0,0,'$country','$language', '$user_os', '$user_browser')"))
                     {
                         $_SESSION['registered'] = true;
                         header('Location: index.php');
