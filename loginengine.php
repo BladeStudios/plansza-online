@@ -17,6 +17,7 @@
     }
     else
     {
+        echo "test1";
         $login = $_POST['login'];
         $password = $_POST['password'];
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
@@ -24,16 +25,19 @@
         $login = htmlentities($login, ENT_QUOTES, "UTF-8");
 
         if($result = @$connection->query(
-            sprintf("SELECT * FROM users WHERE user='%s'",
+            sprintf("SELECT * FROM users WHERE login='%s'",
             mysqli_real_escape_string($connection,$login))))
         {
+            echo "test2";
             $users_amount = $result->num_rows;
             if($users_amount==1)
             {
+                echo "test3";
                 $row = $result->fetch_assoc();
 
-                if(password_verify($password_hash, $row['password']))
+                if(password_verify($password, $row['password']))
                 {
+                    echo "test5";
                     $_SESSION['loggedin'] = true;
                     $_SESSION['id'] = $row['id'];
                     $_SESSION['login'] = $row['login'];
@@ -54,12 +58,10 @@
                     $sql = "UPDATE users SET last_ip=cur_ip, online=1, online_from='$timestamp' WHERE id='$id'";
                     $sql2 = "UPDATE users SET cur_ip='$ip' WHERE id='$id'";
                     
-                    if($result = $mysqli->query($sql))
+                    if($result = $connection->query($sql))
                     {
-                        $result->free_result();
-                        if($result = $mysqli->query($sql2))
+                        if($result = $connection->query($sql2))
                         {
-                            $result->free_result();
                             unset($_SESSION['error']);
                             header('Location: index.php');
                         } else {
@@ -71,7 +73,19 @@
                         header('Location: login.php');
                     }
                 }
+                else
+                {
+                    header('Location: register.php');
+                }
             }
+            else
+            {
+                echo "test4";
+            }
+        }
+        else
+        {
+            echo "test7";
         }
 
         @$connection->close();

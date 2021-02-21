@@ -28,12 +28,17 @@ session_start();
     <a href="index.php" class="menulinks"><?php echo $lang["index"] ?></a> |
     <a href="highscores.php" class="menulinks"><?php echo $lang["ranking"] ?></a> |
     <a href="register.php" class="menulinks"><?php echo $lang["register"] ?></a> |
-    <a href="login.php" class="menulinks">
     <?php
         if(isset($_SESSION['loggedin']) && $_SESSION['loggedin']==true && isset($_SESSION['login']))
+        {
+            echo '<a href="logout.php" class="menulinks">';
             echo $lang["loggedas"] . $_SESSION['login'] . $lang["logout"];
+        }
         else
+        {
+            echo '<a href="login.php" class="menulinks">';
             echo $lang["login"];
+        }
     ?>
     </a>
 </div>
