@@ -1,5 +1,6 @@
 <?php
     session_start();
+    require('status.php');
 ?>
 
 <html lang="pl-PL">

@@ -55,7 +55,7 @@
                         $ip = $_SERVER['REMOTE_ADDR'];
                     }
                     $id = $row['id'];
-                    $sql = "UPDATE users SET last_ip=cur_ip, online=1, online_from='$timestamp' WHERE id='$id'";
+                    $sql = "UPDATE users SET last_ip=cur_ip, online=1, online_from='$timestamp', last_activity='$timestamp' WHERE id='$id'";
                     $sql2 = "UPDATE users SET cur_ip='$ip' WHERE id='$id'";
                     
                     if($result = $connection->query($sql))
