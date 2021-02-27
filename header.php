@@ -9,6 +9,8 @@
     <meta charset="UTF-8">
     <title><?php echo $title; ?></title>
     <link rel="icon" type="image/png" href="images/logo.png"/>
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css"/>
     <link rel="stylesheet" href="style.css"/>
 </head>
 
