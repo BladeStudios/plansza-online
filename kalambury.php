@@ -116,6 +116,7 @@
 ?>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<!-- rysowanie okna kalamburow -->
 <script>
     var canvasWidth = 500;
     var canvasHeight = 300;
@@ -187,4 +188,15 @@
     }
 }
 
+</script>
+
+<script>
+    var conn = new WebSocket('ws://localhost:8080');
+    conn.onopen = function(e) {
+        console.log("Connection established!");
+    };
+
+    conn.onmessage = function(e) {
+        console.log(e.data);
+    };
 </script>

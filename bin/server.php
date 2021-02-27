@@ -15,6 +15,7 @@ use MyApp\Chat;
         8080
     );
 
+    echo date("Y-m-d H:i:s")." Server started successfully.\n";
     $server->run();
 
 ?>
