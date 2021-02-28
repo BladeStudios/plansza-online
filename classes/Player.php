@@ -1,10 +1,10 @@
 <?php
 
-class Spectator
+class Player
 {
     protected $connection;
     private $room_id;
-    private $spectator_id;
+    private $player_id;
 
     public function __construct()
     {
@@ -17,15 +17,15 @@ class Spectator
 
     function setRoomId($room_id) { $this->room_id = $room_id; }
 
-    function getSpectatorId() { return $this->spectator_id; }
+    function getPlayerId() { return $this->player_id; }
 
-    function setSpectatorId($spectator_id) { $this->spectator_id = $spectator_id; }
+    function setPlayerId($player_id) { $this->player_id = $player_id; }
 
-    function updateSpectator($tableName, $roomId, $spectatorId)
+    function updatePlayer($tableName, $roomId, $playerId)
     {
         $sql = "
         UPDATE ".$tableName."
-        SET spectator_id = ".$this->spectator_id."
+        SET player_id = ".$this->player_id."
         WHERE room_id = ".$this->room_id."
         ";
 
@@ -40,8 +40,8 @@ class Spectator
     function insertData($tableName)
     {
         $sql = "
-        INSERT INTO ".$tableName." (room_id, spectator_id)
-        VALUES (".$room_id.",".$spectator_id.")
+        INSERT INTO ".$tableName." (room_id, player_id)
+        VALUES (".$room_id.",".$player_id.")
         ";
 
         $statement = $this->connection->prepare($sql);
