@@ -18,7 +18,6 @@
     }
     else
     {
-        echo "test1";
         $login = $_POST['login'];
         $password = $_POST['password'];
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
@@ -29,16 +28,13 @@
             sprintf("SELECT * FROM users WHERE login='%s'",
             mysqli_real_escape_string($connection,$login))))
         {
-            echo "test2";
             $users_amount = $result->num_rows;
             if($users_amount==1)
             {
-                echo "test3";
                 $row = $result->fetch_assoc();
 
                 if(password_verify($password, $row['password']))
                 {
-                    echo "test5";
                     $_SESSION['loggedin'] = true;
                     $_SESSION['id'] = $row['id'];
                     $_SESSION['login'] = $row['login'];
@@ -80,17 +76,18 @@
                 }
                 else
                 {
-                    header('Location: register.php');
+                    $_SESSION['error']="Wrong password.";
+                    header('Location: login.php');
                 }
             }
             else
             {
-                echo "test4";
+                $_SESSION['error']="Wrong login.";
+                header('Location: login.php');
             }
         }
         else
         {
-            echo "test7";
         }
 
         @$connection->close();

@@ -10,7 +10,8 @@
 <?php
     if(isset($_SESSION['error']))
     {
-        echo $_SESSION['error'];
+        echo '<span style="color: red">'.$_SESSION['error'].'</span>';
+        unset($_SESSION['error']);
     }
 ?>
 
