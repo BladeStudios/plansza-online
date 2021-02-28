@@ -5,6 +5,7 @@ class Room
     protected $connection;
     private $room_id;
     private $creator_id;
+    protected $tableName;
 
     public function __construct()
     {
@@ -21,10 +22,10 @@ class Room
 
     function setCreatorId($creator_id) { $this->creator_id = $creator_id; }
 
-    function updateCreator($tableName, $roomId, $creatorId)
+    function updateCreator()
     {
         $sql = "
-        UPDATE ".$tableName."
+        UPDATE ".$this->$tableName."
         SET creator_id = ".$this->creator_id."
         WHERE room_id = ".$this->room_id."
         ";
@@ -37,11 +38,11 @@ class Room
             return false;
     }
 
-    function insertData($tableName)
+    function insertData()
     {
         $sql = "
-        INSERT INTO ".$tableName." (room_id, creator_id)
-        VALUES (".$room_id.",".$creator_id.")
+        INSERT INTO ".$this->$tableName." (room_id, creator_id)
+        VALUES (".$this->room_id.",".$this->creator_id.")
         ";
 
         $statement = $this->connection->prepare($sql);

@@ -25,7 +25,13 @@
             $roomId = $_GET['room'];
         else
             $roomId = 0;
+        
+        ?>
+        <input type="hidden" name="roomId" id="roomId" value="<?php echo $roomId;?>"/>
+        <input type="hidden" name="userId" id="userId" value="<?php echo $_SESSION['id'];?>"/>
+        <input type="hidden" name="login" id="login" value="<?php echo $_SESSION['login'];?>"/>
 
+    <?php
         $connection = @new mysqli($host, $db_user, $db_password, $db_name);
 
         if($connection->connect_errno!=0)
@@ -52,7 +58,7 @@
             $spectatorsStr = implode("', '", $spectators);
             $sql = "SELECT login FROM users WHERE id IN ('$spectatorsStr')";
 
-            echo '<table border="1"><tr><th>Spectators</th></tr>';
+            echo '<table border="1" id="spectator_list" class="spectator_list"><tr><th>Spectators</th></tr>';
 
             if(!$result = $connection->query($sql))
             {
@@ -62,12 +68,12 @@
             
             while($data = $result->fetch_assoc())
             {
-                echo '<tr><td>';
+                echo '<tr id="'.$data["login"].'"><td>';
                 echo($data['login']);
                 echo '</td></tr>';
             }
 
-            echo '<tr><th>Players</th></tr>';
+            //echo '<tr><th>Players</th></tr>';
 
             $sql = "SELECT player_id FROM kalambury_players WHERE room_id='$roomId'";
 
@@ -94,13 +100,13 @@
                 $_SESSION['error']="Failed to execute query.";
                 header('Location: index.php');
             }
-            
+            /* wyswietlanie playersow ktorzy dolaczyli
             while($data = $result->fetch_assoc())
             {
                 echo '<tr><td>';
                 echo($data['login']);
                 echo '</td></tr>';
-            }
+            }*/
 
             echo '</table>';
         }
@@ -115,7 +121,6 @@
     include "footer.php"
 ?>
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <!-- rysowanie okna kalamburow -->
 <script>
     var canvasWidth = 500;
@@ -190,13 +195,46 @@
 
 </script>
 
-<script>
-    var conn = new WebSocket('ws://localhost:8080');
-    conn.onopen = function(e) {
-        console.log("Connection established!");
-    };
+<script type="text/javascript">
+    $(document).ready(function(){
 
-    conn.onmessage = function(e) {
-        console.log(e.data);
-    };
+        var conn = new WebSocket('ws://localhost:8080');
+        var typeInfo = "pagejoin";
+        var pageInfo = "kalambury";
+        var roomInfo = $('#roomId').val();
+        var userInfo = $('#userId').val();
+        var loginInfo = $('#login').val();
+
+        conn.onopen = function(e) {
+            console.log("Connection established!");
+
+            var data = {
+                type: typeInfo,
+                page: pageInfo,
+                roomid: roomInfo,
+                userid: userInfo,
+                login: loginInfo
+            }
+
+            conn.send(JSON.stringify(data));
+        };
+
+        conn.onmessage = function(e) {
+            console.log(e.data);
+
+            var data = JSON.parse(e.data);
+
+            if(data.type == 'pagejoin' && data.roomid != 0)
+            {
+                var html_data = '<tr id="'+data.login+'"><td>'+data.login+'</td></tr>';
+                $('#spectator_list').append(html_data);
+            }
+            else if(data.type == 'pageleave' && data.roomid != 0)
+            {
+                //var html_data = "<tr><td>"+data.login+"</td></tr>";
+                $('#'+data.login).remove();
+            }
+        };
+
+    });
 </script>
