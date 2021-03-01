@@ -16,6 +16,11 @@
 
     if($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['create']))
     {
+        if(!isset($_SESSION['id']))
+        {
+            $_SESSION['error'] = $lang["e_login_to_create"];
+            header('location: login.php');
+        }
         createRoom();
     }
     
@@ -24,8 +29,6 @@
         $room_object = new KalamburyRoom;
         $newRoomId = $room_object->getEmptyRoomId();
         $room_object->setRoomId($newRoomId);
-        if(!isset($_SESSION['id']))
-            $_SESSION['id'] = 0;
         $room_object->setCreatorId($_SESSION['id']);
         $room_object->addRoom();
 

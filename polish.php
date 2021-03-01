@@ -13,6 +13,9 @@ $lang["str"] = "Strona główna";
 $lang["kalambury"] = "kalambury";
 $lang["strona"] = "STRONA W BUDOWIE";
 
+/* every game page */
+$lang["e_login_to_create"] = "Zaloguj się aby stworzyć pokój.";
+
 /* kalambury.php */
 $lang["powrot"] = "POWRÓT";
 
@@ -35,6 +38,10 @@ $lang['e_nick_exists'] = "Istnieje już konto z tym nickiem!";
 /* login.php */
 $lang["titlelogin"] = "Logowanie";
 $lang["loginbutton"] = "ZALOGUJ";
+
+/* loginengine.php */
+$lang["e_wrong_password"] = "Podane hasło jest nieprawidłowe.";
+$lang["e_wrong_login"] = "Podany login jest nieprawidłowy.";
 
 /* highscores.php */
 $lang["titlehighscores"] = "Ranking";

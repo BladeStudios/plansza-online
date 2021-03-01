@@ -2,6 +2,7 @@
     session_start();
     require_once('connect.php');
     require_once('functions.php');
+    require_once('polish.php');
 
     if(!isset($_POST['login']) || !isset($_POST['password']))
     {
@@ -76,13 +77,13 @@
                 }
                 else
                 {
-                    $_SESSION['error']="Wrong password.";
+                    $_SESSION['error']=$lang["e_wrong_password"];
                     header('Location: login.php');
                 }
             }
             else
             {
-                $_SESSION['error']="Wrong login.";
+                $_SESSION['error']=$lang["e_wrong_login"];
                 header('Location: login.php');
             }
         }
