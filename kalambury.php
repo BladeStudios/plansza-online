@@ -40,15 +40,21 @@
         <a href="index.php"><?php echo $lang["powrot"] ?></a>
     </div>
 
-    
-
     <!--<div id="canvasDiv" style="border: solid 1px #000000"></div>-->
 
     <a href="kalambury.php?room=1">test</a>
     <div id="playersList">
     <?php
         if(isset($_GET['room']))
+        {
+            //check if room exists in database to prevent people from joining rooms by typing room address in browser
+            $room_object = new KalamburyRoom;
+            $room_object->setRoomId($_GET['room']);
+            if($room_object->isRoomCreated() == false)
+                header('location: kalambury.php');
+
             $roomId = $_GET['room'];
+        }
         else
         {
             $roomId = 0;

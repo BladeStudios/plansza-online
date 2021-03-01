@@ -80,6 +80,36 @@ class Room
 
         return $empty;
     }
+
+    //returns true if room with certain ID exists in rooms table in database, otherwise returns false
+    function isRoomCreated()
+    {
+        $sql = "SELECT room_id FROM ".$this->tableName;
+
+        $statement = $this->connection->prepare($sql);
+
+        if($statement->execute())
+        {
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        $array = array();
+
+        foreach($result as $element)
+            array_push($array, $element['room_id']);
+
+        $exist = false;
+        for($i=0; $i<count($array); $i++)
+        {
+            if($this->room_id==$array[$i])
+            {
+                $exist = true;
+                break;
+            }
+        }
+
+        return $exist;
+    }
 }
 
 ?>
