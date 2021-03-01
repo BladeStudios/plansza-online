@@ -10,11 +10,37 @@
 
 <!-- BODY -->
 
+<?php
+
+    require_once('classes/KalamburyRoom.php');
+
+    if($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['create']))
+    {
+        createRoom();
+    }
+    
+    function createRoom()
+    {
+        $room_object = new KalamburyRoom;
+        $newRoomId = $room_object->getEmptyRoomId();
+        $room_object->setRoomId($newRoomId);
+        if(!isset($_SESSION['id']))
+            $_SESSION['id'] = 0;
+        $room_object->setCreatorId($_SESSION['id']);
+        $room_object->addRoom();
+
+        header('location: kalambury.php?room='.$newRoomId);
+    }
+
+?>
+
 <div id="container">
     <br>
     <div id="games">
         <a href="index.php"><?php echo $lang["powrot"] ?></a>
     </div>
+
+    
 
     <!--<div id="canvasDiv" style="border: solid 1px #000000"></div>-->
 
@@ -24,12 +50,20 @@
         if(isset($_GET['room']))
             $roomId = $_GET['room'];
         else
+        {
             $roomId = 0;
-        
-        ?>
-        <input type="hidden" name="roomId" id="roomId" value="<?php echo $roomId;?>"/>
-        <input type="hidden" name="userId" id="userId" value="<?php echo $_SESSION['id'];?>"/>
-        <input type="hidden" name="login" id="login" value="<?php echo $_SESSION['login'];?>"/>
+            echo '
+            <form method="post">
+            <input type="hidden" name="create" value="yes" />
+            <input type="submit" name="createRoom" class="btn btn-success" value="Stwórz pokój" />
+            </form>
+            ';
+        }
+    ?>
+
+    <input type="hidden" name="roomId" id="roomId" value="<?php echo $roomId;?>"/>
+    <input type="hidden" name="userId" id="userId" value="<?php if(isset($_SESSION['id'])) echo $_SESSION['id']; ?>"/>
+    <input type="hidden" name="login" id="login" value="<?php if(isset($_SESSION['login'])) echo $_SESSION['login'];?>"/>
 
     <?php
         $connection = @new mysqli($host, $db_user, $db_password, $db_name);
@@ -231,7 +265,6 @@
             }
             else if(data.type == 'pageleave' && data.roomid != 0)
             {
-                //var html_data = "<tr><td>"+data.login+"</td></tr>";
                 $('#'+data.login).remove();
             }
         };

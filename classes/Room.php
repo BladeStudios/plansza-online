@@ -25,7 +25,7 @@ class Room
     function updateCreator()
     {
         $sql = "
-        UPDATE ".$this->$tableName."
+        UPDATE ".$this->tableName."
         SET creator_id = ".$this->creator_id."
         WHERE room_id = ".$this->room_id."
         ";
@@ -38,10 +38,10 @@ class Room
             return false;
     }
 
-    function insertData()
+    function addRoom()
     {
         $sql = "
-        INSERT INTO ".$this->$tableName." (room_id, creator_id)
+        INSERT INTO ".$this->tableName." (room_id, creator_id)
         VALUES (".$this->room_id.",".$this->creator_id.")
         ";
 
@@ -51,6 +51,34 @@ class Room
             return true;
         else
             return false;
+    }
+
+    function getEmptyRoomId()
+    {
+        $sql = "SELECT room_id FROM ".$this->tableName;
+
+        $statement = $this->connection->prepare($sql);
+
+        if($statement->execute())
+        {
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        $array = array();
+
+        foreach($result as $element)
+            array_push($array, $element['room_id']);
+
+        $empty = 1;
+        for($i=0; $i<count($array); $i++)
+        {
+            if($empty==$array[$i])
+                $empty++;
+            else
+                break;
+        }
+
+        return $empty;
     }
 }
 
