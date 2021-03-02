@@ -7,13 +7,14 @@ class Spectator
     private $spectator_id;
     private $connection_id;
     protected $tableName;
+    protected $gameName;
 
     public function __construct()
     {
         require_once('DatabaseConnection.php');
         $db_connection = new DatabaseConnection;
         $this->connection = $db_connection->connect();
-        $this->tableName = "test";
+        //$this->tableName = "";
     }
 
     function getRoomId() { return $this->room_id; }
@@ -83,12 +84,31 @@ class Spectator
         ";
 
         $statement = $this->connection->prepare($sql);
-
         $statement->execute();
-
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         return $result;
+    }
+
+    function getSpectators() //returns array of all spectators from current room
+    {
+        $sql = "SELECT login FROM users
+                WHERE id IN
+                (SELECT spectator_id FROM ".$this->tableName."
+                WHERE room_id = ".$this->room_id.")";
+
+        $statement = $this->connection->prepare($sql);
+        if($statement->execute())
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        $spectators = array();
+
+        foreach($result as $key => $data)
+        {
+            array_push($spectators, $data['login']);
+        }
+        
+        return $spectators;
     }
 }
 

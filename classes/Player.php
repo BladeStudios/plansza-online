@@ -6,6 +6,7 @@ class Player
     private $room_id;
     private $player_id;
     protected $tableName;
+    protected $gameName;
 
     public function __construct()
     {

@@ -7,7 +7,8 @@ class KalamburySpectator extends Spectator
     public function __construct()
     {
         parent::__construct();
-        $this->tableName = "kalambury_spectators";
+        $this->gameName = "kalambury";
+        $this->tableName = $this->gameName."_spectators";
     }
 }
 

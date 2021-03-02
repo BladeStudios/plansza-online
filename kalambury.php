@@ -13,6 +13,7 @@
 <?php
 
     require_once('classes/KalamburyRoom.php');
+    require_once('classes/KalamburySpectator.php');
 
     if($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['create']))
     {
@@ -52,7 +53,23 @@
             if($room_object->isRoomCreated() == false)
                 header('location: kalambury.php');
 
+            //Room exists in database
             $roomId = $_GET['room'];
+
+            $spectators_object = new KalamburySpectator;
+            $spectators_object->setRoomId($roomId);
+            $spectators_object->setSpectatorId($_SESSION['id']);
+
+            $spectators = $spectators_object->getSpectators();
+            echo '<table border="1" id="spectator_list" class="spectator_list"><tr><th>Spectators</th></tr>';
+
+            foreach($spectators as $spectator)
+            {
+                echo '<tr id="'.$spectator.'"><td>';
+                echo($spectator);
+                echo '</td></tr>';
+            }
+            echo '</table>';
         }
         else
         {
@@ -62,103 +79,21 @@
             <input type="hidden" name="create" value="yes" />
             <input type="submit" name="createRoom" class="btn btn-success" value="'.$lang['unranked_game'].'" />
             </form></div>
+            <div class="inline">
+                <a href="#" class="btn btn-primary disabled button">'.$lang["ranked_game"].'</a>
+            </div>
+
+            <div class="inline">
+                <a href="index.php" class="btn btn-danger button">'.$lang["back"].'</a>
+            </div>
             ';
         }
     ?>
-    
-    <div class="inline">
-        <a href="#" class="btn btn-primary disabled button"><?php echo $lang['ranked_game'] ?></a>
-    </div>
-
-    <div class="inline">
-        <a href="index.php" class="btn btn-danger button"><?php echo $lang['back'] ?></a>
-    </div>
 
     <input type="hidden" name="roomId" id="roomId" value="<?php echo $roomId;?>"/>
     <input type="hidden" name="userId" id="userId" value="<?php if(isset($_SESSION['id'])) echo $_SESSION['id']; ?>"/>
     <input type="hidden" name="login" id="login" value="<?php if(isset($_SESSION['login'])) echo $_SESSION['login'];?>"/>
 
-    <?php
-        $connection = @new mysqli($host, $db_user, $db_password, $db_name);
-
-        if($connection->connect_errno!=0)
-        {
-            echo "Error: ".$connection->connect_errno;
-        }
-        else
-        {
-            $sql = "SELECT spectator_id FROM kalambury_spectators WHERE room_id='$roomId'";
-
-            if(!$result = $connection->query($sql))
-            {
-                $_SESSION['error']="Failed to execute query.";
-                header('Location: index.php');
-            }
-            
-            $spectators = array();
-                
-            while($data = $result->fetch_assoc())
-            {
-                array_push($spectators, $data['spectator_id']);
-            }
-
-            $spectatorsStr = implode("', '", $spectators);
-            $sql = "SELECT login FROM users WHERE id IN ('$spectatorsStr')";
-
-            echo '<table border="1" id="spectator_list" class="spectator_list"><tr><th>Spectators</th></tr>';
-
-            if(!$result = $connection->query($sql))
-            {
-                $_SESSION['error']="Failed to execute query.";
-                header('Location: index.php');
-            }
-            
-            while($data = $result->fetch_assoc())
-            {
-                echo '<tr id="'.$data["login"].'"><td>';
-                echo($data['login']);
-                echo '</td></tr>';
-            }
-
-            //echo '<tr><th>Players</th></tr>';
-
-            $sql = "SELECT player_id FROM kalambury_players WHERE room_id='$roomId'";
-
-            if(!$result = $connection->query($sql))
-            {
-                $_SESSION['error']="Failed to execute query.";
-                header('Location: index.php');
-            }
-            
-            $players = array();
-                
-            while($data = $result->fetch_assoc())
-            {
-                array_push($players, $data['player_id']);
-            }
-
-            $playersStr = implode("', '", $players);
-            $sql = "SELECT login FROM users WHERE id IN ('$playersStr')";
-
-            //echo '<table border="1"><tr><th>Spectators</th></tr>';
-
-            if(!$result = $connection->query($sql))
-            {
-                $_SESSION['error']="Failed to execute query.";
-                header('Location: index.php');
-            }
-            /* wyswietlanie playersow ktorzy dolaczyli
-            while($data = $result->fetch_assoc())
-            {
-                echo '<tr><td>';
-                echo($data['login']);
-                echo '</td></tr>';
-            }*/
-
-            echo '</table>';
-        }
-
-    ?>
     </div>
 </div>
 
@@ -271,12 +206,12 @@
 
             var data = JSON.parse(e.data);
 
-            if(data.type == 'pagejoin' && data.roomid != 0)
+            if(data.type == 'pagejoin' && data.roomid != 0 && data.roomid == roomInfo)
             {
                 var html_data = '<tr id="'+data.login+'"><td>'+data.login+'</td></tr>';
                 $('#spectator_list').append(html_data);
             }
-            else if(data.type == 'pageleave' && data.roomid != 0)
+            else if(data.type == 'pageleave' && data.roomid != 0 && data.roomid == roomInfo)
             {
                 $('#'+data.login).remove();
             }

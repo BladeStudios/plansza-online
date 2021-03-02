@@ -45,6 +45,12 @@ div {
     display: inline-block;
 }
 
+.spectator_list {
+    text-align: left;
+    margin: auto;
+    border: 2px solid red;
+}
+
 /* ID SELECTORS */
 
 #container {
