@@ -39,13 +39,9 @@
 
 <div id="container">
     <br>
-    <div id="games">
-        <a href="index.php"><?php echo $lang["powrot"] ?></a>
-    </div>
 
     <!--<div id="canvasDiv" style="border: solid 1px #000000"></div>-->
 
-    <a href="kalambury.php?room=1">test</a>
     <div id="playersList">
     <?php
         if(isset($_GET['room']))
@@ -62,13 +58,21 @@
         {
             $roomId = 0;
             echo '
-            <form method="post">
+            <div class="inline"><form method="post">
             <input type="hidden" name="create" value="yes" />
-            <input type="submit" name="createRoom" class="btn btn-success" value="Stwórz pokój" />
-            </form>
+            <input type="submit" name="createRoom" class="btn btn-success" value="'.$lang['unranked_game'].'" />
+            </form></div>
             ';
         }
     ?>
+    
+    <div class="inline">
+        <a href="#" class="btn btn-primary disabled button"><?php echo $lang['ranked_game'] ?></a>
+    </div>
+
+    <div class="inline">
+        <a href="index.php" class="btn btn-danger button"><?php echo $lang['back'] ?></a>
+    </div>
 
     <input type="hidden" name="roomId" id="roomId" value="<?php echo $roomId;?>"/>
     <input type="hidden" name="userId" id="userId" value="<?php if(isset($_SESSION['id'])) echo $_SESSION['id']; ?>"/>

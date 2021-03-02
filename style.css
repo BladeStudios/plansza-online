@@ -32,6 +32,19 @@ div {
     background-color: white;
 }
 
+.button{
+    color: white;
+}
+
+.button:hover{
+    color: white;
+    text-decoration: none;
+}
+
+.inline {
+    display: inline-block;
+}
+
 /* ID SELECTORS */
 
 #container {

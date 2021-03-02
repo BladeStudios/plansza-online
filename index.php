@@ -11,8 +11,8 @@
 
 <div id="container">
     <br>
-    <div id="games">
-        <a href="kalambury.php"><?php echo $lang["kalambury"] ?></a>
+    <div class="games btn btn-primary">
+        <a href="kalambury.php" class="button"><?php echo $lang["kalambury"] ?></a>
     </div>
     
 </div>
