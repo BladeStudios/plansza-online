@@ -64,7 +64,8 @@ class Chat implements MessageComponentInterface {
         // The connection is closed, remove it, as we can no longer send it messages
         $this->clients->detach($conn);
 
-        if($this->roomId != 0)
+        //if($this->roomId != 0)
+        if(1==1)
         {
             $this->spectator_object->setConnectionId($conn->resourceId);
             $res = $this->spectator_object->getLoginByConnectionId($conn->resourceId);
@@ -74,7 +75,6 @@ class Chat implements MessageComponentInterface {
             //deleting room if nobody left or changing creator to another player
             $this->room_object->onCreatorLeave();
 
-            //echo $res[0]['login'];
             $data = array("type"=>"pageleave", "login"=>$res[0]['login'], "roomid"=>$this->roomId);
             $jsonData = json_encode($data);
             

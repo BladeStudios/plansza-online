@@ -45,7 +45,7 @@ div {
     display: inline-block;
 }
 
-.spectator_list {
+.list {
     text-align: left;
     margin: auto;
     border: 2px solid red;

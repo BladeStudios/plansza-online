@@ -45,10 +45,12 @@
 
     <div id="playersList">
     <?php
+        $room_object = new KalamburyRoom;
+        $spectators_object = new KalamburySpectator;
+
         if(isset($_GET['room']))
         {
             //check if room exists in database to prevent people from joining rooms by typing room address in browser
-            $room_object = new KalamburyRoom;
             $room_object->setRoomId($_GET['room']);
             if($room_object->isRoomCreated() == false)
                 header('location: kalambury.php');
@@ -56,12 +58,11 @@
             //Room exists in database
             $roomId = $_GET['room'];
 
-            $spectators_object = new KalamburySpectator;
             $spectators_object->setRoomId($roomId);
             $spectators_object->setSpectatorId($_SESSION['id']);
 
             $spectators = $spectators_object->getSpectators();
-            echo '<table border="1" id="spectator_list" class="spectator_list"><tr><th>Spectators</th></tr>';
+            echo '<table border="1" id="spectator_list" class="list"><tr><th>Spectators</th></tr>';
 
             foreach($spectators as $spectator)
             {
@@ -87,6 +88,18 @@
                 <a href="index.php" class="btn btn-danger button">'.$lang["back"].'</a>
             </div>
             ';
+            
+            $rooms_list = $spectators_object->getRoomsList();
+            echo '<table border="1" id="rooms_list" class="list"><tr><th>Room</th><th>Players</th></tr>';
+            foreach($rooms_list as $room)
+            {
+                echo '<tr id="room'.$room['room_id'].'">';
+                echo '<td>Room '.$room['room_id'].'</td>';
+                echo '<td id="players'.$room['room_id'].'">'.$room['spectators'].'</td>';
+                echo '<td><a href="kalambury.php?room='.$room['room_id'].'" class="btn btn-success">JOIN</a></td>';
+                echo '</tr>';
+            }
+            echo '</table>';
         }
     ?>
 
@@ -202,7 +215,7 @@
         };
 
         conn.onmessage = function(e) {
-            console.log(e.data);
+            //console.log(e.data);
 
             var data = JSON.parse(e.data);
 
@@ -214,6 +227,14 @@
             else if(data.type == 'pageleave' && data.roomid != 0 && data.roomid == roomInfo)
             {
                 $('#'+data.login).remove();
+            }
+            else if(data.type == 'pagejoin' && roomInfo == 0)
+            {
+                $('#players'+data.roomid).text($('#players'+data.roomid).text()*1+1);
+            }
+            else if(data.type == 'pageleave' && roomInfo == 0)
+            {
+                $('#players'+data.roomid).text($('#players'+data.roomid).text()*1-1);
             }
         };
 

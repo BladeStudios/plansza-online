@@ -145,9 +145,10 @@ class Room
     {
         //check if any other players are in room
         $spectators_ids = $this->getSpectatorsIds();
-        $how_many = count($spectators_ids);
+        //$how_many = count($spectators_ids);
 
-        if($how_many==0)
+        //if($how_many==0)
+        if(empty($spectators_ids))
         {
             $this->deleteRoom();
             echo date("Y-m-d H:i:s")." Deleted room ".$this->room_id." (".$this->gameName.").\n";
@@ -166,6 +167,19 @@ class Room
             }
         }
         return false;
+    }
+
+    function getRoomsList() //returns array of small arrays with data like (1,5) where 1 is room_id and 5 is amount of spectators
+    {
+        $sql = "SELECT room_id FROM ".$this->tableName;
+        $statement = $this->connection->prepare($sql);
+        if($statement->execute())
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+        $rooms_list = array();
+        foreach($result as $data)
+            array_push($rooms_list, $data['room_id']);
+        print_r($rooms_list);
     }
 }
 

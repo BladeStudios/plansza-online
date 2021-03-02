@@ -110,6 +110,18 @@ class Spectator
         
         return $spectators;
     }
+
+    function getRoomsList()
+    {
+        $sql = "SELECT room_id, count(room_id) AS spectators FROM ".$this->tableName."
+        GROUP BY room_id ASC";
+
+        $statement = $this->connection->prepare($sql);
+        if($statement->execute())
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $result;
+    }
 }
 
 ?>
