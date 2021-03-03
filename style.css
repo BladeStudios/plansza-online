@@ -16,6 +16,11 @@ div {
     display: block;
 }
 
+td, th {
+    padding: 5px 10px;
+    text-align: center;
+}
+
 /* CLASS SELECTORS */
 
 .menulinks {

@@ -53,6 +53,7 @@
 <div id="pagetitle">
     <?php echo $pagetitle; ?>
  </div>
+ <!--
 <div id="wbudowie">
-    <?php echo $lang["strona"]; ?>
- </div>
+    <?php //echo $lang["strona"]; ?>
+ </div>-->

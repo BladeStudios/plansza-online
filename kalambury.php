@@ -81,7 +81,7 @@
             <input type="submit" name="createRoom" class="btn btn-success" value="'.$lang['unranked_game'].'" />
             </form></div>
             <div class="inline">
-                <a href="#" class="btn btn-primary disabled button">'.$lang["ranked_game"].'</a>
+                <a href="#" class="btn btn-secondary disabled button">'.$lang["ranked_game"].'</a>
             </div>
 
             <div class="inline">
@@ -90,12 +90,14 @@
             ';
             
             $rooms_list = $spectators_object->getRoomsList();
-            echo '<table border="1" id="rooms_list" class="list"><tr><th>Room</th><th>Players</th></tr>';
+            echo '<br/>Gry nierankingowe<br/><br/>
+            <table border="1" id="rooms_list" class="list"><tr><th>Room</th><th>Players</th><th>Game Type</th><th>Join</th></tr>';
             foreach($rooms_list as $room)
             {
                 echo '<tr id="room'.$room['room_id'].'">';
                 echo '<td>Room '.$room['room_id'].'</td>';
                 echo '<td class="text-right" id="players'.$room['room_id'].'">'.$room['spectators'].'</td>';
+                echo '<td>Unranked</td>';
                 echo '<td><a href="kalambury.php?room='.$room['room_id'].'" class="btn btn-success">JOIN</a></td>';
                 echo '</tr>';
             }
