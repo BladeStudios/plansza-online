@@ -49,7 +49,10 @@ class Room
         $statement = $this->connection->prepare($sql);
 
         if($statement->execute())
+        {
+            echo date("Y-m-d H:i:s")." User ".$this->creator_id." created Room ".$this->room_id."\n";
             return true;
+        }
         else
             return false;
     }

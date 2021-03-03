@@ -22,7 +22,7 @@ class Chat implements MessageComponentInterface {
         // Store the new connection to send messages to later
         $this->clients->attach($conn);
 
-        echo date("Y-m-d H:i:s")." New connection! ({$conn->resourceId})\n";
+        echo date("Y-m-d H:i:s")." Connection {$conn->resourceId} has connected.\n";
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
@@ -40,7 +40,7 @@ class Chat implements MessageComponentInterface {
 
         if($data['type']=='pagejoin' && $data['roomid']!=0)
         {
-            echo date("Y-m-d H:i:s")." User ".$this->userId." has joined the room ".$this->roomId." (kalambury).\n";
+            echo date("Y-m-d H:i:s")." User ".$this->userId." has joined the Room ".$this->roomId." (kalambury).\n";
             $this->spectator_object->setRoomId($data['roomid']);
             $this->spectator_object->setSpectatorId($data['userid']);
             $this->spectator_object->setConnectionId($from->resourceId);
@@ -67,11 +67,10 @@ class Chat implements MessageComponentInterface {
         
         $this->spectator_object->setConnectionId($conn->resourceId);
         $room_by_conn = $this->spectator_object->getRoomIdByConnectionId();
-        if(!empty($room_by_conn))
-        {
+        if(empty($room_by_conn))
+            $this->roomId = 0;
+        else
             $this->roomId = $room_by_conn[0]['room_id'];
-            print_r($this->spectator_object->getRoomIdByConnectionId());
-        }
 
         if($this->roomId != 0)
         {

@@ -53,7 +53,7 @@
             //check if room exists in database to prevent people from joining rooms by typing room address in browser
             $room_object->setRoomId($_GET['room']);
             if($room_object->isRoomCreated() == false)
-                header('location: kalambury.php');
+                createRoom();
 
             //Room exists in database
             $roomId = $_GET['room'];
