@@ -95,7 +95,7 @@
             {
                 echo '<tr id="room'.$room['room_id'].'">';
                 echo '<td>Room '.$room['room_id'].'</td>';
-                echo '<td id="players'.$room['room_id'].'">'.$room['spectators'].'</td>';
+                echo '<td class="text-right" id="players'.$room['room_id'].'">'.$room['spectators'].'</td>';
                 echo '<td><a href="kalambury.php?room='.$room['room_id'].'" class="btn btn-success">JOIN</a></td>';
                 echo '</tr>';
             }

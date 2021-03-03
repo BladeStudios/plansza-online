@@ -141,7 +141,7 @@ class Room
             return false;    
     }
 
-    function onCreatorLeave()
+    function onPlayerLeave()
     {
         //check if any other players are in room
         $spectators_ids = $this->getSpectatorsIds();
@@ -154,7 +154,7 @@ class Room
             echo date("Y-m-d H:i:s")." Deleted room ".$this->room_id." (".$this->gameName.").\n";
             return true;
         }
-        else
+        else if(!in_array($this->getCreatorById(),$spectators_ids)) //if room creator left the room
         {
             $sql = "UPDATE ".$this->tableName."
             SET creator_id = ".$spectators_ids[0]."
@@ -180,6 +180,15 @@ class Room
         foreach($result as $data)
             array_push($rooms_list, $data['room_id']);
         print_r($rooms_list);
+    }
+
+    function getCreatorById()
+    {
+        $sql = "SELECT creator_id FROM ".$this->tableName." WHERE room_id=".$this->room_id;
+        $statement = $this->connection->prepare($sql);
+        if($statement->execute())
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $result[0]['creator_id'];
     }
 }
 

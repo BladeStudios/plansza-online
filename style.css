@@ -51,6 +51,19 @@ div {
     border: 2px solid red;
 }
 
+.games {
+    font-size: 20pt;
+}
+
+.center-in-div {
+    display: block;
+    margin: 0 auto;
+}
+
+.text-right {
+    text-align: right;
+}
+
 /* ID SELECTORS */
 
 #container {
@@ -65,10 +78,6 @@ div {
     width: 100%;
     height: 70px;
     background: grey; 
-}
-
-#games {
-    font-size: 20pt;
 }
 
 #logo {

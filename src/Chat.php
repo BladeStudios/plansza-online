@@ -30,6 +30,8 @@ class Chat implements MessageComponentInterface {
         echo date("Y-m-d H:i:s")."".sprintf(' Connection %d sending message "%s" to %d other connection%s.' . "\n"
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
+        $this->spectator_object = new \KalamburySpectator;
+
         $data = json_decode($msg, true);
         $this->roomId = $data['roomid'];
         $this->userId = $data['userid'];
@@ -39,7 +41,6 @@ class Chat implements MessageComponentInterface {
         if($data['type']=='pagejoin' && $data['roomid']!=0)
         {
             echo date("Y-m-d H:i:s")." User ".$this->userId." has joined the room ".$this->roomId." (kalambury).\n";
-            $this->spectator_object = new \KalamburySpectator;
             $this->spectator_object->setRoomId($data['roomid']);
             $this->spectator_object->setSpectatorId($data['userid']);
             $this->spectator_object->setConnectionId($from->resourceId);
@@ -50,7 +51,7 @@ class Chat implements MessageComponentInterface {
         }
         else if($data['type']=='pageleave' && $data['roomid']!=0)
         {
-            echo "leaving room";
+            echo "Leaving room.";
         }
         foreach ($this->clients as $client) {
             //if ($from !== $client) {
@@ -63,17 +64,23 @@ class Chat implements MessageComponentInterface {
     public function onClose(ConnectionInterface $conn) {
         // The connection is closed, remove it, as we can no longer send it messages
         $this->clients->detach($conn);
-
-        //if($this->roomId != 0)
-        if(1==1)
+        
+        $this->spectator_object->setConnectionId($conn->resourceId);
+        $room_by_conn = $this->spectator_object->getRoomIdByConnectionId();
+        if(!empty($room_by_conn))
         {
-            $this->spectator_object->setConnectionId($conn->resourceId);
-            $res = $this->spectator_object->getLoginByConnectionId($conn->resourceId);
-            echo date("Y-m-d H:i:s")." Deleting data for connection ".$conn->resourceId.".\n";
-            $this->spectator_object->deleteData();
+            $this->roomId = $room_by_conn[0]['room_id'];
+            print_r($this->spectator_object->getRoomIdByConnectionId());
+        }
 
-            //deleting room if nobody left or changing creator to another player
-            $this->room_object->onCreatorLeave();
+        if($this->roomId != 0)
+        {
+                $res = $this->spectator_object->getLoginByConnectionId($conn->resourceId);
+                echo date("Y-m-d H:i:s")." Deleting data for connection ".$conn->resourceId.".\n";
+                $this->spectator_object->deleteData();
+
+                //deleting room if nobody left or changing creator to another player
+                $this->room_object->onPlayerLeave();
 
             $data = array("type"=>"pageleave", "login"=>$res[0]['login'], "roomid"=>$this->roomId);
             $jsonData = json_encode($data);

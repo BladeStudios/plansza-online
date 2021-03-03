@@ -190,7 +190,7 @@
 				unset($_SESSION['e_email']);
 			}
 		    ?>
-            </br><input type="submit" style="margin-left: auto; margin-right: auto;" value="<?php echo $lang["registerbutton"] ?>"/>
+            </br><input type="submit" class="btn btn-success center-in-div" value="<?php echo $lang["registerbutton"] ?>"/>
         </form>
     </div>
     

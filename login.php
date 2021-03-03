@@ -23,7 +23,7 @@
         <form action="loginengine.php" method="post">
             <?php echo $lang["nick"] ?><br/><input type="text" name="login"/><br/>
             <?php echo $lang["password"] ?><br/><input type="password" name="password"/><br/>
-            </br><input type="submit" style="margin-left: auto; margin-right: auto;" value="<?php echo $lang["loginbutton"] ?>"/>
+            </br><input type="submit" class="btn btn-success center-in-div" value="<?php echo $lang["loginbutton"] ?>"/>
         </form>
     </div>
     

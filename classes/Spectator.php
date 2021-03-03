@@ -122,6 +122,16 @@ class Spectator
         
         return $result;
     }
+
+    function getRoomIdByConnectionId()
+    {
+        $sql = "SELECT room_id FROM ".$this->tableName." WHERE connection_id=".$this->connection_id;
+        $statement = $this->connection->prepare($sql);
+        if($statement->execute())
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $result;
+    }
 }
 
 ?>
