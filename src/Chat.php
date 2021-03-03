@@ -67,10 +67,12 @@ class Chat implements MessageComponentInterface {
         
         $this->spectator_object->setConnectionId($conn->resourceId);
         $room_by_conn = $this->spectator_object->getRoomIdByConnectionId();
+        echo " ROOM PRZED: ".$this->roomId."\n";
         if(empty($room_by_conn))
             $this->roomId = 0;
         else
             $this->roomId = $room_by_conn[0]['room_id'];
+        echo " ROOM PO: ".$this->roomId."\n";
 
         if($this->roomId != 0)
         {
@@ -79,6 +81,7 @@ class Chat implements MessageComponentInterface {
                 $this->spectator_object->deleteData();
 
                 //deleting room if nobody left or changing creator to another player
+                $this->room_object->setRoomId($this->roomId);
                 $this->room_object->onPlayerLeave();
 
             $data = array("type"=>"pageleave", "login"=>$res[0]['login'], "roomid"=>$this->roomId);
