@@ -41,8 +41,6 @@
 <div id="container">
     <br>
 
-    <!--<div id="canvasDiv" style="border: solid 1px #000000"></div>-->
-
     <div id="playersList">
     <?php
         $room_object = new KalamburyRoom;
@@ -54,6 +52,8 @@
             $room_object->setRoomId($_GET['room']);
             if($room_object->isRoomCreated() == false)
                 createRoom();
+            
+            echo '<div id="canvasDiv" style="background-color: white; border: solid 1px #000000"></div><br/>';
 
             //Room exists in database
             $roomId = $_GET['room'];
@@ -221,7 +221,7 @@
 
             var data = JSON.parse(e.data);
 
-            if(data.type == 'pagejoin' && data.roomid != 0 && data.roomid == roomInfo)
+            if(data.type == 'pagejoin' && data.roomid != 0 && data.roomid == roomInfo && ! $('#'+data.login).length)
             {
                 var html_data = '<tr id="'+data.login+'"><td>'+data.login+'</td></tr>';
                 $('#spectator_list').append(html_data);
