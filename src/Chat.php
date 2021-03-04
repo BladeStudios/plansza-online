@@ -35,8 +35,9 @@ class Chat implements MessageComponentInterface {
         $data = json_decode($msg, true);
         $this->roomId = $data['roomid'];
         $this->userId = $data['userid'];
-        $this->login = $data['login'];
         $this->page = $data['page'];
+        if(!empty($data['login']))
+            $this->login = $data['login'];
 
         if($data['type']=='pagejoin' && $data['roomid']!=0)
         {
@@ -48,16 +49,32 @@ class Chat implements MessageComponentInterface {
 
             $this->room_object = new \KalamburyRoom;
             $this->room_object->setRoomId($data['roomid']);
+            
+            foreach ($this->clients as $client) {
+                //if ($from !== $client) {
+                    // The sender is not the receiver, send to each client connected
+                    $client->send($msg);
+                //}
+            }
         }
         else if($data['type']=='pageleave' && $data['roomid']!=0)
         {
             echo "Leaving room.";
+            
+            foreach ($this->clients as $client) {
+                //if ($from !== $client) {
+                    // The sender is not the receiver, send to each client connected
+                    $client->send($msg);
+                //}
+            }
         }
-        foreach ($this->clients as $client) {
-            //if ($from !== $client) {
-                // The sender is not the receiver, send to each client connected
-                $client->send($msg);
-            //}
+        else if ($data['type']=='mousemove' && $data['roomid']!=0 && $data['page']=='kalambury')
+        {
+            foreach ($this->clients as $client) {
+                if ($from !== $client) {
+                    $client->send($msg);
+                }
+            }
         }
     }
 

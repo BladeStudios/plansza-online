@@ -119,9 +119,19 @@
 ?>
 
 <!-- rysowanie okna kalamburow -->
-<script>
+<script type="text/javascript">
+
+    var pageInfo = "kalambury";
+    var roomInfo = $('#roomId').val();
+    var userInfo = $('#userId').val();
+    var loginInfo = $('#login').val();
+
     var canvasWidth = 500;
     var canvasHeight = 300;
+
+    
+
+    $(document).ready(function(){
 
     var canvasDiv = document.getElementById('canvasDiv');
     canvas = document.createElement('canvas');
@@ -144,14 +154,16 @@
         var mouseY = e.pageY - this.offsetTop;
                 
         paint = true;
-        addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-        redraw();
+        //addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+        sendDrawingToOthers(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+        draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
     });
 
     $('#canvas').mousemove(function(e){
         if(paint){
-            addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
-            redraw();
+            //addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+            sendDrawingToOthers(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+            draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
         }
     });
 
@@ -163,6 +175,28 @@
         paint = false;
     });
 
+    function sendDrawingToOthers(x, y, dragging)
+    {
+        typeInfo = "mousemove";
+        var data = {
+                type: typeInfo,
+                page: pageInfo,
+                roomid: roomInfo,
+                userid: userInfo,
+                posx: x,
+                posy: y,
+                drag: dragging
+            }
+
+        conn.send(JSON.stringify(data));
+    }
+
+    function addClickAndDraw(x, y, dragging)
+    {
+        //addClick(x, y, dragging);
+        draw(x,y, dragging);
+    }
+
     function addClick(x, y, dragging)
     {
         clickX.push(x);
@@ -170,6 +204,7 @@
         clickDrag.push(dragging);
     }
 
+    /* old drawing
     function redraw(){
         context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
         
@@ -187,23 +222,40 @@
             context.lineTo(clickX[i], clickY[i]);
             context.closePath();
             context.stroke();
+        }
+    } */
+
+    var lastX;
+    var lastY;
+
+    function draw(x,y,dragging){
+        context.strokeStyle = "#df4b26";
+        context.lineJoin = "round";
+        context.lineWidth = 5;
+        if(dragging)
+        {
+            context.beginPath();
+            context.moveTo(lastX, lastY);
+            context.lineTo(x, y);
+            context.closePath();
+        }
+        else
+        {
+            context.fillStyle = "#df4b26";
+            context.fillRect(x-2,y-2,5,5);
+            //console.log("rect");
+        }
+        context.stroke();
+        lastX = x;
+        lastY = y;
     }
-}
-
-</script>
-
-<script type="text/javascript">
-    $(document).ready(function(){
 
         var conn = new WebSocket('ws://localhost:8080');
-        var typeInfo = "pagejoin";
-        var pageInfo = "kalambury";
-        var roomInfo = $('#roomId').val();
-        var userInfo = $('#userId').val();
-        var loginInfo = $('#login').val();
 
-        conn.onopen = function(e) {
+        conn.onopen = function(e) { //czyli co ma się dziać u usera, który się połączył do socketa
             console.log("Connection established!");
+
+            var typeInfo = "pagejoin";
 
             var data = {
                 type: typeInfo,
@@ -216,27 +268,34 @@
             conn.send(JSON.stringify(data));
         };
 
-        conn.onmessage = function(e) {
-            //console.log(e.data);
+        conn.onmessage = function(e) { //czyli co ma się dziać u usera, który otrzymał wiadomość
 
             var data = JSON.parse(e.data);
+            //console.log(data);
 
-            if(data.type == 'pagejoin' && data.roomid != 0 && data.roomid == roomInfo && ! $('#'+data.login).length)
+            if(data.page == 'kalambury')
             {
-                var html_data = '<tr id="'+data.login+'"><td>'+data.login+'</td></tr>';
-                $('#spectator_list').append(html_data);
-            }
-            else if(data.type == 'pageleave' && data.roomid != 0 && data.roomid == roomInfo)
-            {
-                $('#'+data.login).remove();
-            }
-            else if(data.type == 'pagejoin' && roomInfo == 0)
-            {
-                $('#players'+data.roomid).text($('#players'+data.roomid).text()*1+1);
-            }
-            else if(data.type == 'pageleave' && roomInfo == 0)
-            {
-                $('#players'+data.roomid).text($('#players'+data.roomid).text()*1-1);
+                if(data.type == 'pagejoin' && data.roomid != 0 && data.roomid == roomInfo && ! $('#'+data.login).length)
+                {
+                    var html_data = '<tr id="'+data.login+'"><td>'+data.login+'</td></tr>';
+                    $('#spectator_list').append(html_data);
+                }
+                else if(data.type == 'pageleave' && data.roomid != 0 && data.roomid == roomInfo)
+                {
+                    $('#'+data.login).remove();
+                }
+                else if(data.type == 'pagejoin' && roomInfo == 0)
+                {
+                    $('#players'+data.roomid).text($('#players'+data.roomid).text()*1+1);
+                }
+                else if(data.type == 'pageleave' && roomInfo == 0)
+                {
+                    $('#players'+data.roomid).text($('#players'+data.roomid).text()*1-1);
+                }
+                else if(data.type == 'mousemove' && data.roomid != 0 && data.roomid == roomInfo)
+                {
+                    addClickAndDraw(data.posx, data.posy, data.drag);
+                }
             }
         };
 
