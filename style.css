@@ -72,10 +72,10 @@ td, th {
 /* ID SELECTORS */
 
 #canvasDiv {
-    width: 500px;
-    height: 350px;
+    width: 650px;
+    height: 450px;
     display: block;
-    margin: 0 auto;
+    background-color: white;
 }
 
 #container {
@@ -108,7 +108,6 @@ td, th {
     text-align: left;
     display: inline-block;
 }
-
 
 #wbudowie {
     font-size: 50px;

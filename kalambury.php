@@ -38,19 +38,7 @@
 
 ?>
 
-<div id="kalambury-container">
-    <div id="kalambury-left">
-        <div id="kalambury-word">word</div>
-        <div id="kalambury-canvas">canvas</div>
-        <div id="kalambury-tools">tools</div>
-    </div>
-    <div id="kalambury-right">
-        <div id="kalambury-players">players</div>
-        <div id="kalambury-chat">chat</div>
-        <div id="kalambury-message">message</div>
-    </div>
-</div>
-<br/><br/>
+
 
 <div id="playersList">
     <?php
@@ -59,12 +47,27 @@
 
         if(isset($_GET['room']))
         {
+            echo '<div id="kalambury-container">
+                <div id="kalambury-left">
+                    <div id="kalambury-word">word</div>
+                    <div id="kalambury-canvas">
+                        <div id="canvasDiv"></div>
+                    </div>
+                    <div id="kalambury-tools">tools</div>
+                </div>
+                <div id="kalambury-right">
+                    <div id="kalambury-players">players</div>
+                    <div id="kalambury-chat">chat</div>
+                    <div id="kalambury-message">message</div>
+                </div>
+            </div>';
+
             //check if room exists in database to prevent people from joining rooms by typing room address in browser
             $room_object->setRoomId($_GET['room']);
             if($room_object->isRoomCreated() == false)
                 createRoom();
             
-            echo '<div id="canvasDiv" style="background-color: white; border: solid 1px #000000"></div><br/>';
+            
 
             //Room exists in database
             $roomId = $_GET['room'];
@@ -136,8 +139,8 @@
     var userInfo = $('#userId').val();
     var loginInfo = $('#login').val();
 
-    var canvasWidth = 500;
-    var canvasHeight = 350;
+    var canvasWidth = 650;
+    var canvasHeight = 450;
 
     
 
@@ -148,6 +151,7 @@
     canvas.setAttribute('width', canvasWidth);
     canvas.setAttribute('height', canvasHeight);
     canvas.setAttribute('id', 'canvas');
+    canvas.style.border = "none";
     canvasDiv.appendChild(canvas);
     if(typeof G_vmlCanvasManager != 'undefined') {
         canvas = G_vmlCanvasManager.initElement(canvas);
@@ -160,13 +164,16 @@
     var paint;
 
     $('#canvas').mousedown(function(e){
-        var mouseX = e.pageX - this.offsetLeft;
-        var mouseY = e.pageY - this.offsetTop;
-                
-        paint = true;
-        //addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-        sendDrawingToOthers(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-        draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+        if(event.which == 1) //left mouse
+        {
+            var mouseX = e.pageX - this.offsetLeft;
+            var mouseY = e.pageY - this.offsetTop;
+                    
+            paint = true;
+            //addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+            sendDrawingToOthers(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+            draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+        }
     });
 
     $('#canvas').mousemove(function(e){
