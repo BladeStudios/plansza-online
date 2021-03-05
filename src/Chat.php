@@ -101,7 +101,7 @@ class Chat implements MessageComponentInterface {
                 $this->room_object->setRoomId($this->roomId);
                 $this->room_object->onPlayerLeave();
 
-            $data = array("type"=>"pageleave", "login"=>$res[0]['login'], "roomid"=>$this->roomId);
+            $data = array("type"=>"pageleave", "login"=>$res[0]['login'], "roomid"=>$this->roomId, "page"=>$this->page);
             $jsonData = json_encode($data);
             
             foreach ($this->clients as $client) {

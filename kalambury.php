@@ -293,7 +293,7 @@
             {
                 if(data.type == 'pagejoin' && data.roomid != 0 && data.roomid == roomInfo && $('#'+data.login).length == 0)
                 {
-                    var html_data = '<tr id="'+data.login+'" class="kalambury-me"><td id="'+data.login+'-login" class="kalambury-login">'+data.login+'</td><td id="'+data.login+'-points" class="kalambury-points">0</td></tr>';
+                    var html_data = '<tr id="'+data.login+'"><td id="'+data.login+'-login" class="kalambury-login">'+data.login+'</td><td id="'+data.login+'-points" class="kalambury-points">0</td></tr>';
                     $('#spectator-list').append(html_data);
                     if(userInfo == data.userid)
                         $('#'+data.login).addClass("kalambury-me");

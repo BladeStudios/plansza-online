@@ -199,6 +199,7 @@ td, th {
 #kalambury-chat {
     height: 252px;
     border-bottom: 2px solid black;
+    background-color: white;
 }
 
 #kalambury-message {
