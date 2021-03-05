@@ -76,6 +76,14 @@ class Chat implements MessageComponentInterface {
                 }
             }
         }
+        else if($data['type']=='message' && $data['roomid']!=0 && $data['page']=='kalambury')
+        {
+            foreach ($this->clients as $client) {
+                if ($from !== $client) {
+                    $client->send($msg);
+                }
+            }
+        }
     }
 
     public function onClose(ConnectionInterface $conn) {
@@ -84,12 +92,10 @@ class Chat implements MessageComponentInterface {
         
         $this->spectator_object->setConnectionId($conn->resourceId);
         $room_by_conn = $this->spectator_object->getRoomIdByConnectionId();
-        echo " ROOM PRZED: ".$this->roomId."\n";
         if(empty($room_by_conn))
             $this->roomId = 0;
         else
             $this->roomId = $room_by_conn[0]['room_id'];
-        echo " ROOM PO: ".$this->roomId."\n";
 
         if($this->roomId != 0)
         {

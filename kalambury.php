@@ -69,7 +69,6 @@
                 <div id="kalambury-right">
                     <div id="kalambury-players">
                         <table id="spectator-list" class="spectator-list"><tr><th class="kalambury-player-th">Player</th><th class="kalambury-points-th">Points</th></tr>';
-
                         foreach($spectators as $spectator)
                         {
                             echo '<tr id="'.$spectator.'"><td id="'.$spectator.'-login" class="kalambury-login">';
@@ -78,11 +77,13 @@
                         }
                         echo '</table>
                     </div>
-                    <div id="kalambury-chat">chat</div>
-                    <div id="kalambury-message">message</div>
+                    <div id="kalambury-chat"></div>
+                    <div id="kalambury-message">
+                        <div id="message-div"><input type="text" class="form-control" id="message-input" maxlength="50"></div>
+                        <div id="send-message-div"><input type="button" class="btn btn-primary" id="message-button" value=">"></div>
+                    </div>
                 </div>
             </div>';
-
             
         }
         else
@@ -122,7 +123,7 @@
     <input type="hidden" name="userId" id="userId" value="<?php if(isset($_SESSION['id'])) echo $_SESSION['id']; ?>"/>
     <input type="hidden" name="login" id="login" value="<?php if(isset($_SESSION['login'])) echo $_SESSION['login'];?>"/>
 
-    </div>
+</div>
 
 <!-- FOOTER -->
 
@@ -133,18 +134,17 @@
 <!-- rysowanie okna kalamburow -->
 <script type="text/javascript">
 
-    var pageInfo = "kalambury";
-    var roomInfo = $('#roomId').val();
-    var userInfo = $('#userId').val();
-    var loginInfo = $('#login').val();
+var pageInfo = "kalambury";
+var roomInfo = $('#roomId').val();
+var userInfo = $('#userId').val();
+var loginInfo = $('#login').val();
 
-    var canvasWidth = 650;
-    var canvasHeight = 450;
+var canvasWidth = 650;
+var canvasHeight = 450;
 
-    $(document).ready(function(){
+$(document).ready(function(){
 
-    $('#'+loginInfo).addClass("kalambury-me"); //ze wzgledu na google chrome, bo on widzi ten element po refreshu zanim jeszcze zostanie on dodany przez js
-
+    //CANVAS
     var canvasDiv = document.getElementById('canvasDiv');
     canvas = document.createElement('canvas');
     canvas.setAttribute('width', canvasWidth);
@@ -169,7 +169,6 @@
             var mouseY = e.pageY - this.offsetTop;
                     
             paint = true;
-            //addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
             sendDrawingToOthers(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
             draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
         }
@@ -177,7 +176,6 @@
 
     $('#canvas').mousemove(function(e){
         if(paint){
-            //addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
             sendDrawingToOthers(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
             draw(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
         }
@@ -209,7 +207,6 @@
 
     function addClickAndDraw(x, y, dragging)
     {
-        //addClick(x, y, dragging);
         draw(x,y, dragging);
     }
 
@@ -220,26 +217,39 @@
         clickDrag.push(dragging);
     }
 
-    /* old drawing
-    function redraw(){
-        context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
+    $('#'+loginInfo).addClass("kalambury-me"); //ze wzgledu na google chrome, bo on widzi ten element po refreshu zanim jeszcze zostanie on dodany przez js
+
+    function sendMessage()
+    {
+        var messageInfo = $('#message-input').val();
+        var msg = '<span style="font-weight: bold; color: blue">' + loginInfo + ": </span>" + messageInfo + "<br/>";
+        var chat = $('#kalambury-chat');
+        chat.append(msg);
+        $('#kalambury-chat').scrollTop($('#kalambury-chat')[0].scrollHeight);
+        $('#message-input').val("");
         
-        context.strokeStyle = "#df4b26";
-        context.lineJoin = "round";
-        context.lineWidth = 5;
-                    
-        for(var i=0; i < clickX.length; i++) {		
-            context.beginPath();
-            if(clickDrag[i] && i){
-            context.moveTo(clickX[i-1], clickY[i-1]);
-            }else{
-            context.moveTo(clickX[i]-1, clickY[i]);
+        typeInfo = "message";
+        var data = {
+                type: typeInfo,
+                page: pageInfo,
+                roomid: roomInfo,
+                userid: userInfo,
+                login: loginInfo,
+                msg: messageInfo
             }
-            context.lineTo(clickX[i], clickY[i]);
-            context.closePath();
-            context.stroke();
-        }
-    } */
+
+        conn.send(JSON.stringify(data));
+    }
+
+    $('#message-button').click(function() {
+        sendMessage();
+    });
+
+    $('#message-input').keydown(function(e) {
+        var key = e.which;
+        if(key == 13)
+            sendMessage();
+    });
 
     var lastX;
     var lastY;
@@ -266,56 +276,62 @@
         lastY = y;
     }
 
-        var conn = new WebSocket('ws://localhost:8080');
+    var conn = new WebSocket('ws://localhost:8080');
 
-        conn.onopen = function(e) { //czyli co ma się dziać u usera, który się połączył do socketa
-            console.log("Connection established!");
+    conn.onopen = function(e) //czyli co ma się dziać u usera, który się połączył do socketa
+    {
+        console.log("Connection established!");
+        var typeInfo = "pagejoin";
 
-            var typeInfo = "pagejoin";
+        var data = {
+            type: typeInfo,
+            page: pageInfo,
+            roomid: roomInfo,
+            userid: userInfo,
+            login: loginInfo
+        }
 
-            var data = {
-                type: typeInfo,
-                page: pageInfo,
-                roomid: roomInfo,
-                userid: userInfo,
-                login: loginInfo
-            }
+        conn.send(JSON.stringify(data));
+    };
 
-            conn.send(JSON.stringify(data));
-        };
+    conn.onmessage = function(e) { //czyli co ma się dziać u usera, który otrzymał wiadomość
 
-        conn.onmessage = function(e) { //czyli co ma się dziać u usera, który otrzymał wiadomość
+        var data = JSON.parse(e.data);
 
-            var data = JSON.parse(e.data);
-            //console.log(data);
-
-            if(data.page == 'kalambury')
+        if(data.page == 'kalambury')
+        {
+            if(data.type == 'pagejoin' && data.roomid != 0 && data.roomid == roomInfo && $('#'+data.login).length == 0)
             {
-                if(data.type == 'pagejoin' && data.roomid != 0 && data.roomid == roomInfo && $('#'+data.login).length == 0)
-                {
-                    var html_data = '<tr id="'+data.login+'"><td id="'+data.login+'-login" class="kalambury-login">'+data.login+'</td><td id="'+data.login+'-points" class="kalambury-points">0</td></tr>';
-                    $('#spectator-list').append(html_data);
-                    if(userInfo == data.userid)
-                        $('#'+data.login).addClass("kalambury-me");
-                }
-                else if(data.type == 'pageleave' && data.roomid != 0 && data.roomid == roomInfo)
-                {
-                    $('#'+data.login).remove();
-                }
-                else if(data.type == 'pagejoin' && roomInfo == 0)
-                {
-                    $('#players'+data.roomid).text($('#players'+data.roomid).text()*1+1);
-                }
-                else if(data.type == 'pageleave' && roomInfo == 0)
-                {
-                    $('#players'+data.roomid).text($('#players'+data.roomid).text()*1-1);
-                }
-                else if(data.type == 'mousemove' && data.roomid != 0 && data.roomid == roomInfo)
-                {
-                    addClickAndDraw(data.posx, data.posy, data.drag);
-                }
+                var html_data = '<tr id="'+data.login+'"><td id="'+data.login+'-login" class="kalambury-login">'+data.login+'</td><td id="'+data.login+'-points" class="kalambury-points">0</td></tr>';
+                $('#spectator-list').append(html_data);
+                if(userInfo == data.userid)
+                    $('#'+data.login).addClass("kalambury-me");
             }
-        };
+            else if(data.type == 'pageleave' && data.roomid != 0 && data.roomid == roomInfo)
+            {
+                $('#'+data.login).remove();
+            }
+            else if(data.type == 'pagejoin' && roomInfo == 0)
+            {
+                $('#players'+data.roomid).text($('#players'+data.roomid).text()*1+1);
+            }
+            else if(data.type == 'pageleave' && roomInfo == 0)
+            {
+                $('#players'+data.roomid).text($('#players'+data.roomid).text()*1-1);
+            }
+            else if(data.type == 'mousemove' && data.roomid != 0 && data.roomid == roomInfo)
+            {
+                addClickAndDraw(data.posx, data.posy, data.drag);
+            }
+            else if(data.type == 'message' && data.roomid != 0 && data.roomid == roomInfo)
+            {
+                var msg = '<span style="font-weight: bold; color: black">' + data.login + ": </span>" + data.msg + "<br/>";
+                var chat = $('#kalambury-chat');
+                chat.append(msg);
+                $('#kalambury-chat').scrollTop($('#kalambury-chat')[0].scrollHeight);
+            }
+        }
+    };
 
-    });
+});
 </script>
