@@ -19,6 +19,7 @@ div {
 td, th {
     padding: 5px 10px;
     text-align: center;
+    border: 2px solid red;
 }
 
 /* CLASS SELECTORS */
@@ -48,12 +49,6 @@ td, th {
 
 .inline {
     display: inline-block;
-}
-
-.list {
-    text-align: left;
-    margin: auto;
-    border: 2px solid red;
 }
 
 .games {
@@ -107,6 +102,11 @@ td, th {
 #registerform {
     text-align: left;
     display: inline-block;
+}
+
+#rooms-list {
+    margin: auto;
+    border: 1px solid red;
 }
 
 #wbudowie {
@@ -198,6 +198,40 @@ td, th {
 
 #kalambury-message {
     height: 50px;
+}
+
+.kalambury-login {
+    text-align: center;
+    width: 300px;
+    border-width: 0 1px 1px 0;
+    border-color: black;
+}
+
+.kalambury-points {
+    text-align: center;
+    border-width: 0 0 1px 0;
+    border-color: black;
+}
+
+.spectator-list {
+    background-color: white;
+    width: 100%;
+    border: 0px;
+}
+
+.kalambury-player-th {
+    border-width: 0 1px 1px 0;
+    border-color: black;
+}
+
+.kalambury-points-th {
+    border-width: 0 0 1px 0;
+    border-color: black;
+}
+
+.kalambury-me {
+    font-weight: bold;
+    color: blue;
 }
 
 /* END KALAMBURY */

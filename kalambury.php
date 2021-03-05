@@ -38,8 +38,6 @@
 
 ?>
 
-
-
 <div id="playersList">
     <?php
         $room_object = new KalamburyRoom;
@@ -47,6 +45,19 @@
 
         if(isset($_GET['room']))
         {
+            //check if room exists in database to prevent people from joining rooms by typing room address in browser
+            $room_object->setRoomId($_GET['room']);
+            if($room_object->isRoomCreated() == false)
+                createRoom();
+
+            //Room exists in database
+            $roomId = $_GET['room'];
+
+            $spectators_object->setRoomId($roomId);
+            $spectators_object->setSpectatorId($_SESSION['id']);
+
+            $spectators = $spectators_object->getSpectators();
+
             echo '<div id="kalambury-container">
                 <div id="kalambury-left">
                     <div id="kalambury-word">word</div>
@@ -56,35 +67,23 @@
                     <div id="kalambury-tools">tools</div>
                 </div>
                 <div id="kalambury-right">
-                    <div id="kalambury-players">players</div>
+                    <div id="kalambury-players">
+                        <table id="spectator-list" class="spectator-list"><tr><th class="kalambury-player-th">Player</th><th class="kalambury-points-th">Points</th></tr>';
+
+                        foreach($spectators as $spectator)
+                        {
+                            echo '<tr id="'.$spectator.'"><td id="'.$spectator.'-login" class="kalambury-login">';
+                            echo($spectator);
+                            echo '</td><td id="'.$spectator.'-points" class="kalambury-points">0</td></tr>';
+                        }
+                        echo '</table>
+                    </div>
                     <div id="kalambury-chat">chat</div>
                     <div id="kalambury-message">message</div>
                 </div>
             </div>';
 
-            //check if room exists in database to prevent people from joining rooms by typing room address in browser
-            $room_object->setRoomId($_GET['room']);
-            if($room_object->isRoomCreated() == false)
-                createRoom();
             
-            
-
-            //Room exists in database
-            $roomId = $_GET['room'];
-
-            $spectators_object->setRoomId($roomId);
-            $spectators_object->setSpectatorId($_SESSION['id']);
-
-            $spectators = $spectators_object->getSpectators();
-            echo '<table border="1" id="spectator_list" class="list"><tr><th>Spectators</th></tr>';
-
-            foreach($spectators as $spectator)
-            {
-                echo '<tr id="'.$spectator.'"><td>';
-                echo($spectator);
-                echo '</td></tr>';
-            }
-            echo '</table>';
         }
         else
         {
@@ -105,7 +104,7 @@
             
             $rooms_list = $spectators_object->getRoomsList();
             echo '<br/>Gry nierankingowe<br/><br/>
-            <table border="1" id="rooms_list" class="list"><tr><th>Room</th><th>Players</th><th>Game Type</th><th>Join</th></tr>';
+            <table id="rooms-list"><tr><th>Room</th><th>Players</th><th>Game Type</th><th>Join</th></tr>';
             foreach($rooms_list as $room)
             {
                 echo '<tr id="room'.$room['room_id'].'">';
@@ -142,9 +141,9 @@
     var canvasWidth = 650;
     var canvasHeight = 450;
 
-    
-
     $(document).ready(function(){
+
+    $('#'+loginInfo).addClass("kalambury-me"); //ze wzgledu na google chrome, bo on widzi ten element po refreshu zanim jeszcze zostanie on dodany przez js
 
     var canvasDiv = document.getElementById('canvasDiv');
     canvas = document.createElement('canvas');
@@ -292,10 +291,12 @@
 
             if(data.page == 'kalambury')
             {
-                if(data.type == 'pagejoin' && data.roomid != 0 && data.roomid == roomInfo && ! $('#'+data.login).length)
+                if(data.type == 'pagejoin' && data.roomid != 0 && data.roomid == roomInfo && $('#'+data.login).length == 0)
                 {
-                    var html_data = '<tr id="'+data.login+'"><td>'+data.login+'</td></tr>';
-                    $('#spectator_list').append(html_data);
+                    var html_data = '<tr id="'+data.login+'" class="kalambury-me"><td id="'+data.login+'-login" class="kalambury-login">'+data.login+'</td><td id="'+data.login+'-points" class="kalambury-points">0</td></tr>';
+                    $('#spectator-list').append(html_data);
+                    if(userInfo == data.userid)
+                        $('#'+data.login).addClass("kalambury-me");
                 }
                 else if(data.type == 'pageleave' && data.roomid != 0 && data.roomid == roomInfo)
                 {
