@@ -22,11 +22,11 @@
 <div id="top" class="whitebg">
 
     <div id="logo">
-        <img src="images/logo64px.png"/>
+        <a href="index.php"><img src="images/logo64px.png"/></a>
     </div>
 
     <div id="title" class="whitebg">
-        Plansza.online
+        <a href="index.php" class="no-link">Plansza.online</a>
     </div>
 
     <div id="links" class="whitebg">

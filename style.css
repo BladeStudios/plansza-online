@@ -64,6 +64,11 @@ td, th {
     text-align: right;
 }
 
+.no-link, .no-link:hover {
+    text-decoration: none;
+    color: black;
+}
+
 /* ID SELECTORS */
 
 #canvasDiv {
