@@ -101,6 +101,7 @@ td, th {
 #pagetitle {
     font-size: 30px;
     font-weight: bold;
+    margin: 10px;
 }
 
 #registerform {
@@ -147,8 +148,9 @@ td, th {
     line-height: 54px;
 }
 
-/* END-HEADER */
+/* END HEADER */
 
+/* KALAMBURY */
 
 #kalambury-container {
     display: block;
@@ -165,9 +167,38 @@ td, th {
     height: 554px;
 }
 
-#kalambury_right {
-    border: 0px solid black;
+#kalambury-right {
     float: left;
     width: 350px;
     height: 554px;
 }
+
+#kalambury-word {
+    height: 52px;
+    border-bottom: 2px solid black;
+}
+
+#kalambury-canvas {
+    height: 452px;
+    border-bottom: 2px solid black;
+}
+
+#kalambury-tools {
+    height: 50px;
+}
+
+#kalambury-players {
+    height: 252px;
+    border-bottom: 2px solid black;
+}
+
+#kalambury-chat {
+    height: 252px;
+    border-bottom: 2px solid black;
+}
+
+#kalambury-message {
+    height: 50px;
+}
+
+/* END KALAMBURY */

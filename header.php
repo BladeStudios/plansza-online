@@ -50,7 +50,7 @@
 
 </div>
 
-<br/><br/>
+<br/>
 <div id="pagetitle">
     <?php echo $pagetitle; ?>
  </div>

@@ -39,9 +39,15 @@
 ?>
 
 <div id="kalambury-container">
-    <div id="kalambury-left">left
+    <div id="kalambury-left">
+        <div id="kalambury-word">word</div>
+        <div id="kalambury-canvas">canvas</div>
+        <div id="kalambury-tools">tools</div>
     </div>
-    <div id="kalambury-right">right
+    <div id="kalambury-right">
+        <div id="kalambury-players">players</div>
+        <div id="kalambury-chat">chat</div>
+        <div id="kalambury-message">message</div>
     </div>
 </div>
 <br/><br/>
