@@ -71,15 +71,15 @@ td, th {
 
 /* ID SELECTORS */
 
-#container {
-    clear: both;
-}
-
 #canvasDiv {
     width: 500px;
-    height: 300px;
+    height: 350px;
     display: block;
     margin: 0 auto;
+}
+
+#container {
+    clear: both;
 }
 
 #footer { 
@@ -92,21 +92,10 @@ td, th {
     background: grey; 
 }
 
-#logo {
-    float: left;
-}
-
 #logotitle {
     width: 478px;
     height: 128px;
     margin: auto;
-}
-
-#links {
-    margin: 5px 0px 5px 0px;
-    font-size: 20pt;
-    padding: 5px 5px 5px 5px;
-    color: green;
 }
 
 #pagetitle {
@@ -119,24 +108,66 @@ td, th {
     display: inline-block;
 }
 
-#title {
-    font-size: 30px;
-    font-weight: bold;
-    float: left;
-    width: 350px;
-    height: 128px;
-    line-height: 128px;
-}
-
-#top {
-    text-align: center;
-    display: inline-block;
-    height: 128px;
-    width: 100%;
-}
 
 #wbudowie {
     font-size: 50px;
     color: red;
     font-weight: bold;
+}
+
+
+
+/* HEADER */
+
+#top {
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+}
+
+#logo {
+    float: left;
+}
+
+#title {
+    font-size: 20px;
+    font-weight: bold;
+    float: left;
+    width: 180px;
+    height: 64px;
+    line-height: 64px;
+}
+
+#links {
+    float: right;
+    font-size: 15px;
+    color: green;
+    padding: 5px 5px 5px 5px;
+    max-width: inherit;
+    line-height: 54px;
+}
+
+/* END-HEADER */
+
+
+#kalambury-container {
+    display: block;
+    margin: 0 auto;
+    border: 2px solid black;
+    width: 1006px;
+    height: 558px;
+}
+
+#kalambury-left {
+    border-right: 2px solid black;
+    float: left;
+    width: 652px;
+    height: 554px;
+}
+
+#kalambury_right {
+    border: 0px solid black;
+    float: left;
+    width: 350px;
+    height: 554px;
 }

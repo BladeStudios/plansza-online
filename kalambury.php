@@ -38,10 +38,15 @@
 
 ?>
 
-<div id="container">
-    <br>
+<div id="kalambury-container">
+    <div id="kalambury-left">left
+    </div>
+    <div id="kalambury-right">right
+    </div>
+</div>
+<br/><br/>
 
-    <div id="playersList">
+<div id="playersList">
     <?php
         $room_object = new KalamburyRoom;
         $spectators_object = new KalamburySpectator;
@@ -110,7 +115,6 @@
     <input type="hidden" name="login" id="login" value="<?php if(isset($_SESSION['login'])) echo $_SESSION['login'];?>"/>
 
     </div>
-</div>
 
 <!-- FOOTER -->
 
@@ -127,7 +131,7 @@
     var loginInfo = $('#login').val();
 
     var canvasWidth = 500;
-    var canvasHeight = 300;
+    var canvasHeight = 350;
 
     
 
