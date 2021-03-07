@@ -45,6 +45,11 @@
 
         if(isset($_GET['room']))
         {
+            if(!isset($_SESSION['id']))
+            {
+                $_SESSION['error'] = $lang["e_login_to_join"];
+                header('location: login.php');
+            }
             //check if room exists in database to prevent people from joining rooms by typing room address in browser
             $room_object->setRoomId($_GET['room']);
             if($room_object->isRoomCreated() == false)
@@ -64,7 +69,9 @@
                     <div id="kalambury-canvas">
                         <div id="canvasDiv"></div>
                     </div>
-                    <div id="kalambury-tools">tools</div>
+                    <div id="kalambury-tools">
+                        <div id="start-game-div"><input type="button" class="btn btn-success" id="start-game" value="START GAME"></div>
+                    </div>
                 </div>
                 <div id="kalambury-right">
                     <div id="kalambury-players">

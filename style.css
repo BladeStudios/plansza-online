@@ -267,4 +267,17 @@ td, th {
     padding: 6px 6px 6px 0px;
 }
 
+/* KALAMBURY TOOLS */
+
+#start-game-div {
+    float: right;
+    display: table;
+    padding: 6px 6px 6px 0px;
+}
+
+#start-game {
+    vertical-align: middle;
+    display: table-cell;
+}
+
 /* END KALAMBURY */

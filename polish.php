@@ -15,6 +15,7 @@ $lang['strona'] = "STRONA W BUDOWIE";
 
 /* every game page */
 $lang['e_login_to_create'] = "Zaloguj się aby stworzyć pokój.";
+$lang['e_login_to_join'] = "Zaloguj się aby dołączyć do pokoju.";
 $lang['unranked_game'] = "Gra nierankingowa";
 $lang['ranked_game'] = "Gra rankingowa";
 $lang['back'] = "Powrót";
