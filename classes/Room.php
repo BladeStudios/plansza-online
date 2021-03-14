@@ -23,6 +23,14 @@ class Room
 
     function setCreatorId($creator_id) { $this->creator_id = $creator_id; }
 
+    function getGameName() { return $this->gameName; }
+
+    function setGameName($game_name) { $this->gameName = $game_name; }
+
+    function getTableName() { return $this->tableName; }
+
+    function setTableName() { $this->tableName = $this->gameName."_rooms"; }
+
     function updateCreator()
     {
         $sql = "
@@ -50,7 +58,7 @@ class Room
 
         if($statement->execute())
         {
-            echo date("Y-m-d H:i:s")." User ".$this->creator_id." created Room ".$this->room_id."\n";
+            //echo date("Y-m-d H:i:s")." User ".$this->creator_id." created Room ".$this->room_id."\n";
             return true;
         }
         else
