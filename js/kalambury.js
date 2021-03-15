@@ -80,6 +80,13 @@ $(document).ready(function(){
                     window.location.href = data.pageto + ".php?error=1";
                 }
             }
+            else if(data.type == 'action')
+            {
+                if(data.action == 'wordToDraw')
+                {
+                    $('#kalambury-word').text('SŁOWO DO NARYSOWANIA: '+data.word);
+                }
+            }
         }
     };
 
@@ -232,8 +239,8 @@ $(document).ready(function(){
     function onStart()
     {
         var data = {
-            type: "kalambury_gamestate",
-            action: "createGame",
+            type: "action",
+            action: "startGame",
             page: pageInfo,
             roomid: roomInfo,
             userid: userInfo,

@@ -15,16 +15,36 @@ class Engine implements MessageComponentInterface {
     private $room_object;
 
     private $state = array();
+    /*  zmienna globalna przechowująca aktualny stan serwisu.
+    /   Struktura:
+    /   state = {
+    /            [gameName] = {
+    /                            [roomId] = {
+    /                                            [players] = {
+    /                                                            [key] = {
+    /                                                                        [id]
+    /                                                                        [login]
+    /                                                                        [connection_id]
+    /                                                                    }
+    /                                                        }
+    /                                           [game_status]
+    /                                        }
+    /                         }
+    /            }
+    /
+    */
 
     public function __construct() {
-        $this->clients = new \SplObjectStorage;
+        //$this->clients = new \SplObjectStorage;
+        $this->clients = [];
         $this->spectator_object = new \KalamburySpectator;
         $this->room_object = new \Room;
     }
 
     public function onOpen(ConnectionInterface $conn) {
         // Store the new connection to send messages to later
-        $this->clients->attach($conn);
+        //$this->clients->attach($conn);
+        $this->clients[$conn->resourceId] = $conn;
 
         echo date("Y-m-d H:i:s")." Connection {$conn->resourceId} has connected.\n";
     }
@@ -54,10 +74,12 @@ class Engine implements MessageComponentInterface {
             $this->spectator_object->insertData();
 
             //dodanie nowego rooma do state
-            $userData['id'] = $this->userId;
-            $userData['login'] = $this->login;
-            $userData['connection_id'] = $from->resourceId;
-            array_push($this->state[$this->page][$this->roomId]['players'], $userData);
+            //$userData['id'] = $this->userId;
+            //$userData['login'] = $this->login;
+            //$userData['connection_id'] = $from->resourceId;
+            //array_push($this->state[$this->page][$this->roomId]['players'], $userData);
+            $this->state[$this->page][$this->roomId]['players'][$this->userId]['login'] = $this->login;
+            $this->state[$this->page][$this->roomId]['players'][$this->userId]['connection_id'] = $from->resourceId;
             print_r($this->state);
             
             foreach ($this->clients as $client) {
@@ -116,22 +138,27 @@ class Engine implements MessageComponentInterface {
             $jsonData = json_encode($red);
             $from->send($jsonData);
         }
-        else if($data['type']=='kalambury_gamestate')
+        else if($data['type']=='action')
         {
-            if($data['action']=='createGame')
+            if($data['action']=='startGame')
             {
-                $this->gamestate_object->setRoomId($this->roomId);
-                if($this->gamestate_object->createGame())
+                if($this->getGameStatus($this->page, $this->roomId)!="started")
+                {
                     echo date("Y-m-d H:i:s")." Successfully started game of ".$data['page']." in room ".$data['roomid'].".\n";
+                    $this->onKalamburyStart($this->roomId);
+                }
                 else
-                    echo date("Y-m-d H:i:s")." Error: Couldn't start game of ".$data['page']." in room ".$data['roomid'].".\n";
+                {
+                    echo date("Y-m-d H:i:s")." Error: Game of ".$data['page']." in room ".$data['roomid']." already started.\n";
+                }
             }
         }
     }
 
     public function onClose(ConnectionInterface $conn) {
         // The connection is closed, remove it, as we can no longer send it messages
-        $this->clients->detach($conn);
+        //$this->clients->detach($conn);
+        unset($this->clients[$conn->resourceId]);
         
         $this->spectator_object->setConnectionId($conn->resourceId);
         $room_by_conn = $this->spectator_object->getRoomIdByConnectionId();
@@ -179,6 +206,143 @@ class Engine implements MessageComponentInterface {
         echo "An error has occurred: {$e->getMessage()}\n";
 
         $conn->close();
+    }
+
+    /* -------------------------------------------------------------------
+                        GETTERY I SETTERY ZMIENNEJ STATE
+    ------------------------------------------------------------------- */
+
+    public function setGameStatus($gameName, $roomId, $status)
+    {
+        //$status = not_started/started/finished
+        $this->state[$gameName][$roomId]['game_status'] = $status;
+    }
+
+    public function getGameStatus($gameName, $roomId)
+    {
+        if(isset($this->state[$gameName][$roomId]['game_status']))
+            return $this->state[$gameName][$roomId]['game_status'];
+        else
+            return false;
+    }
+
+    public function setPoints($gameName, $roomId, $playerId, $points)
+    {
+        $this->state[$gameName][$roomId]['players'][$playerId]['points'] = $points;
+    }
+
+    public function getPoints($gameName, $roomId, $playerId)
+    {
+        if(isset($this->state[$gameName][$roomId]['players'][$playerId]['points']))
+            return $this->state[$gameName][$roomId]['players'][$playerId]['points'];
+        else
+            return false;
+    }
+
+    public function addPoints($gameName, $roomId, $playerId, $points)
+    {
+        $this->state[$gameName][$roomId]['players'][$playerId]['points'] += $points;
+    }
+
+    public function getUserIdByConnectionId($gameName, $roomId, $connectionId)
+    {
+        foreach($this->state[$gameName][$roomId]['players'] as $key => $element)
+        {
+            if($element['connection_id']==$connectionId)
+            {
+                return $key;
+                break;
+            }
+        }
+        return false;
+    }
+
+    public function getConnectionIdByUserId($gameName, $roomId, $userId)
+    {
+        foreach($this->state[$gameName][$roomId]['players'] as $key => $element)
+        {
+            if($key==$userId)
+            {
+                return $element['connection_id'];
+                break;
+            }
+        }
+        return false;
+    }
+
+    /* -------------------------------------------------------------------
+                            SILNIK KALAMBURY
+    ------------------------------------------------------------------- */
+
+    public function onKalamburyStart($roomId)
+    {
+        $this->setGameStatus("kalambury",$roomId, "started");
+
+        //ustawienie wszystkim graczom w pokoju po 0 pkt
+        foreach($this->state["kalambury"][$roomId]['players'] as $key => $element)
+        {
+            $this->setPoints("kalambury", $roomId, $key, 0);
+        }
+
+        //set word
+        $this->setWord($roomId);
+
+        //select and set drawer
+        $drawers = $this->getDrawersList($roomId);
+        $currentDrawer = $drawers[0];
+        $this->setDrawer($roomId, $currentDrawer);
+
+        print_r($this->state);
+
+        //send word to drawer
+        $this->sendWordToDrawer($roomId, $this->getWord($roomId), $currentDrawer);
+    }
+
+    public function sendWordToDrawer($roomId, $word, $drawerId)
+    {
+        $connectionId = $this->getConnectionIdByUserId("kalambury", $roomId, $drawerId);
+
+        $json = array("type"=>"action", "action"=>"wordToDraw" ,"roomid"=>$roomId, "page"=>$this->page, "word"=>$word);
+        $jsonData = json_encode($json);
+        $this->clients[$connectionId]->send($jsonData);
+    }
+
+    public function setDrawer($roomId, $drawerId)
+    {
+        $this->state['kalambury'][$roomId]['drawer'] = $drawerId;
+    }
+
+    public function getDrawer($roomId)
+    {
+        if(isset($this->state['kalambury'][$roomId]['drawer']))
+            return $this->state['kalambury'][$roomId]['drawer'];
+        else
+            return false;
+    }
+
+    public function getDrawersList($roomId)
+    {
+        $list = array();
+        foreach($this->state['kalambury'][$roomId]['players'] as $key => $element)
+        {
+            array_push($list, $key);
+        }
+        return $list;
+    }
+
+    public function setWord($roomId)
+    {
+        $words = array("kasztan", "jabłko", "banan", "gruszka", "samochód", "lalka", "szalik", "bałwan", "dom", "banknot");
+        $word = $words[rand(0,9)];
+        $this->state['kalambury'][$roomId]['word'] = $word;
+    }
+
+    public function getWord($roomId)
+    {
+        if(isset($this->state['kalambury'][$roomId]['word']))
+            return $this->state['kalambury'][$roomId]['word'];
+        else
+            return false;
     }
 }
 
