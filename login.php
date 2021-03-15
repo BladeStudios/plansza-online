@@ -8,6 +8,12 @@
 ?>
 
 <?php
+    if(isset($_GET['error']))
+    {
+        if($_GET['error']==1)
+            $_SESSION['error'] = $lang['e_login_to_create'];
+    }
+
     if(isset($_SESSION['error']))
     {
         echo '<span style="color: red">'.$_SESSION['error'].'</span>';

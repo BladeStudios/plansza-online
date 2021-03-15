@@ -95,17 +95,24 @@ class Engine implements MessageComponentInterface {
         }
         else if($data['type']=='createRoom')
         {
-            //dodanie do bazy nowego rooma
-            $newRoomId = $this->room_object->getEmptyRoomId();
-            $this->room_object->setRoomId($newRoomId);
-            $this->room_object->setCreatorId($this->userId);
-            $this->room_object->addRoom();
-
-            //tworzenie pustej tablicy w zmiennej state
-            $this->state[$this->page][$newRoomId]['players'] = array();
-
             //redirect
-            $red = array("type"=>"redirect", "roomid"=>$newRoomId, "page"=>$this->page);
+            if($this->userId == "" || $this->userId == 0)
+            {
+                $_SESSION['error'] = "test";//$lang['e_login_to_create'];
+                $red = array("type"=>"redirect", "page"=>$this->page, "pageto"=>"login");
+            }
+            else
+            {
+                //dodanie do bazy nowego rooma
+                $newRoomId = $this->room_object->getEmptyRoomId();
+                $this->room_object->setRoomId($newRoomId);
+                $this->room_object->setCreatorId($this->userId);
+                $this->room_object->addRoom();
+
+                //tworzenie pustej tablicy w zmiennej state
+                $this->state[$this->page][$newRoomId]['players'] = array();
+                $red = array("type"=>"redirect", "roomid"=>$newRoomId, "page"=>$this->page);
+            }
             $jsonData = json_encode($red);
             $from->send($jsonData);
         }

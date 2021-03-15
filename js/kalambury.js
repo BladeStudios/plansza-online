@@ -68,12 +68,20 @@ $(document).ready(function(){
             }
             else if(data.type == 'redirect')
             {
-                window.location.href = data.page + ".php?room=" + data.roomid;
+                if(data.pageto != 'login')
+                {
+                    console.log("nie login");
+                    window.location.href = data.page + ".php?room=" + data.roomid;
+                    $('#'+loginInfo).addClass("kalambury-me"); //ze wzgledu na google chrome, bo on widzi ten element po refreshu zanim jeszcze zostanie on dodany przez js
+                }
+                else if (data.pageto == 'login')
+                {
+                    console.log("login");
+                    window.location.href = data.pageto + ".php?error=1";
+                }
             }
         }
     };
-
-    $('#'+loginInfo).addClass("kalambury-me"); //ze wzgledu na google chrome, bo on widzi ten element po refreshu zanim jeszcze zostanie on dodany przez js
 
     /* ------------------------------------------------------------------------------------------------------
                                                     CANVAS
